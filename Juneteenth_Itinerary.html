@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juneteenth Game Plan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f4f1ea;
+      --paper:     #fdfaf3;
+      --ink:       #1a1a1a;
+      --muted:     #6b6b66;
+      --line:      #1a1a1a;
+      --soft-line: #c9c4b8;
+      --accent:    #c1272d;
+      --green:     #2d6a4f;
+      --gold:      #d4a017;
+      --blue:      #2c4a7c;
+      --shadow:    4px 4px 0 #1a1a1a;
+      --shadow-sm: 2px 2px 0 #1a1a1a;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 32px 16px 80px;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(0,0,0,0.06) 1px, transparent 0);
+      background-size: 22px 22px;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--paper);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 40px 44px 56px;
+      position: relative;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .header h1 {
+      font-size: clamp(40px, 7vw, 64px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+    }
+    .header h1 .red { color: var(--accent); }
+    .header h1 .green { color: var(--green); }
+    .header-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.5;
+    }
+    .stamp {
+      position: absolute;
+      top: 0;
+      right: 0;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 10px;
+      transform: rotate(4deg);
+      background: var(--paper);
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 44px 0 24px;
+    }
+    .section-title-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 4px 8px;
+    }
+    .section-title h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .section-title-line {
+      flex: 1;
+      height: 2px;
+      background: var(--line);
+    }
+
+    /* ── INTRO STRIP ── */
+    .intro-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 2px solid var(--line);
+      margin-bottom: 8px;
+    }
+    .intro-cell {
+      padding: 16px 18px;
+      border-right: 2px solid var(--line);
+    }
+    .intro-cell:last-child { border-right: none; }
+    .intro-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .intro-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    @media (max-width: 600px) {
+      .intro-strip { grid-template-columns: 1fr; }
+      .intro-cell { border-right: none; border-bottom: 2px solid var(--line); }
+      .intro-cell:last-child { border-bottom: none; }
+    }
+
+    /* ── FLOWCHART ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .node {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      padding: 18px 22px;
+      width: 100%;
+      max-width: 540px;
+      position: relative;
+    }
+
+    .node-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .node-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3px 8px;
+      letter-spacing: 1px;
+    }
+    .node-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+    }
+    .node h3 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .node p {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.55;
+    }
+    .node p + p { margin-top: 8px; }
+    .node ul {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+    .node li {
+      font-size: 13.5px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* arrow between nodes */
+    .arrow {
+      width: 2px;
+      height: 36px;
+      background: var(--line);
+      position: relative;
+    }
+    .arrow::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 9px solid var(--line);
+    }
+
+    /* Peter feature node */
+    .node.peter {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, #fff8f0 0%, var(--paper) 100%);
+    }
+    .peter-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+    }
+    .peter-photo-wrap {
+      flex-shrink: 0;
+      width: 110px;
+    }
+    .peter-photo {
+      width: 110px;
+      height: 130px;
+      object-fit: cover;
+      object-position: center 20%;
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      display: block;
+    }
+    .peter-caption {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+    .peter-content { flex: 1; }
+    .peter-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      letter-spacing: 1.5px;
+      margin-top: 8px;
+    }
+    @media (max-width: 500px) {
+      .peter-row { flex-direction: column; align-items: center; }
+      .peter-content { text-align: center; }
+    }
+
+    /* ── BRANCH ── */
+    .branch-label {
+      background: var(--gold);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      padding: 14px 22px;
+      text-align: center;
+      max-width: 540px;
+      width: 100%;
+    }
+    .branch-label .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .branch-label h3 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .branch-label p {
+      font-size: 13px;
+      margin-top: 4px;
+      color: #1a1a1a;
+    }
+
+    /* fork lines + 3 paths */
+    .fork-svg {
+      width: 100%;
+      max-width: 760px;
+      height: 50px;
+      display: block;
+    }
+
+    .paths-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 760px;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      .paths-row { grid-template-columns: 1fr; gap: 24px; }
+      .fork-svg { display: none; }
+    }
+
+    .path-node {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      padding: 18px 18px 20px;
+      position: relative;
+    }
+    .path-node.a { border-top: 8px solid var(--green); }
+    .path-node.b { border-top: 8px solid var(--blue); }
+    .path-node.c { border-top: 8px solid var(--accent); }
+    .path-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .path-node h4 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .path-node p {
+      font-size: 13px;
+      color: #333;
+      line-height: 1.55;
+    }
+    .path-node ul {
+      margin-top: 10px;
+      padding-left: 16px;
+    }
+    .path-node li {
+      font-size: 12.5px;
+      color: #444;
+      line-height: 1.55;
+      margin-bottom: 2px;
+    }
+    .path-time {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 2px 7px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    /* ── NOTES PANEL ── */
+    .notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+    @media (max-width: 600px) {
+      .notes { grid-template-columns: 1fr; }
+    }
+    .note-card {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+    }
+    .note-card .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .note-card h4 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .note-card ul { padding-left: 18px; }
+    .note-card li {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    /* ── PACK LIST ── */
+    .pack {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 28px 32px;
+    }
+    .pack-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .pack-head h3 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .pack-head .stamp-sm {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+    }
+    .pack-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 600px) { .pack-grid { grid-template-columns: 1fr; } }
+    .pack-col h5 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--soft-line);
+    }
+    .pack-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      padding: 5px 0;
+    }
+    .checkbox {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 2px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-meta">
+        <span>DOC // 001</span>
+        <span>FRIDAY · JUNE 19 · 2026</span>
+      </div>
+      <h1>The <span class="red">Juneteenth</span><br><span class="green">Game Plan</span></h1>
+      <p class="header-sub">
+        A full-day rundown of where we're going, when, and what we're doing.
+        Hoops first, then food, then Jake's place for the afternoon. Things split up
+        around dinner — three options laid out below. Read it before you head out.
+      </p>
+      <div class="stamp">APPROVED</div>
+    </div>
+
+    <!-- INTRO STRIP -->
+    <div class="intro-strip">
+      <div class="intro-cell">
+        <div class="intro-label">START</div>
+        <div class="intro-value">12:00 PM</div>
+      </div>
+      <div class="intro-cell">
+        <div class="intro-label">DECISION POINT</div>
+        <div class="intro-value">7:00 PM at Jake's</div>
+      </div>
+      <div class="intro-cell">
+        <div class="intro-label">VIBE</div>
+        <div class="intro-value">Casual, no rush</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: DAYTIME FLOW -->
+    <div class="section-title">
+      <span class="section-title-num">01</span>
+      <h2>Daytime Flow</h2>
+      <span class="section-title-line"></span>
+    </div>
+
+    <div class="flow">
+
+      <!-- PETER NODE -->
+      <div class="node peter">
+        <div class="node-header">
+          <span class="node-time">12:00 — 12:20 PM</span>
+          <span class="node-tag">HEADS UP</span>
+        </div>
+        <div class="peter-row">
+          <div class="peter-photo-wrap">
+            <img class="peter-photo" src="peter.jpg" alt="Peter" />
+            <div class="peter-caption">PETER</div>
+          </div>
+          <div class="peter-content">
+            <h3>Peter is getting his haircut</h3>
+            <p>
+              Heads up for everyone — Peter has a haircut appointment from 12:00 to 12:20.
+              He'll meet us at the court right after. Don't start the real run without him.
+              Use the extra time to warm up, stretch, or grab water.
+            </p>
+            <span class="peter-badge">WAIT FOR PETE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow"></div>
+
+      <!-- BALL -->
+      <div class="node">
+        <div class="node-header">
+          <span class="node-time">12:30 PM</span>
+          <span class="node-tag">ACTIVITY 01</span>
+        </div>
+        <h3>Basketball — Tip Off</h3>
+        <p>
+          Meet at the court by 12:30. Pete should be there by then. We've got the
+          court for a little over an hour. Bring water, you'll need it.
+        </p>
+        <ul>
+          <li>Run full court if we have the numbers</li>
+          <li>Keep teams fair — switch up after every few games</li>
+          <li>Last game wraps by 1:40 so we can roll out clean</li>
+        </ul>
+      </div>
+
+      <div class="arrow"></div>
+
+      <!-- FOOD -->
+      <div class="node">
+        <div class="node-header">
+          <span class="node-time">1:45 PM</span>
+          <span class="node-tag">ACTIVITY 02</span>
+        </div>
+        <h3>Lunch — Together</h3>
+        <p>
+          Everyone eats as a group right after hoops. Pick a spot close to the court so
+          we're not driving all over. Fast and casual — we want to be back on the move
+          by 2:45 latest. Talk it out and pick the spot the morning of.
+        </p>
+      </div>
+
+      <div class="arrow"></div>
+
+      <!-- LIQUOR STOP -->
+      <div class="node">
+        <div class="node-header">
+          <span class="node-time">2:50 PM</span>
+          <span class="node-tag">PIT STOP</span>
+        </div>
+        <h3>Stop for Drinks</h3>
+        <p>
+          On the way to Jake's, we swing by the liquor store. A few different people
+          will be making runs throughout the day, so don't stress about getting everything
+          in one trip. Grab enough for the afternoon, plus ice and mixers.
+        </p>
+        <p>
+          Someone also bring a cooler to Jake's so we can keep everything cold without
+          running back and forth to the fridge.
+        </p>
+      </div>
+
+      <div class="arrow"></div>
+
+      <!-- JAKE'S -->
+      <div class="node">
+        <div class="node-header">
+          <span class="node-time">3:00 PM</span>
+          <span class="node-tag">HOME BASE</span>
+        </div>
+        <h3>Jake's House</h3>
+        <p>
+          Set up at Jake's for the afternoon. This is home base for the rest of the day.
+          Get changed, get comfortable, and let the day settle in.
+        </p>
+        <p>
+          From 3 onward we're playing dye, hanging out, swimming, and just kicking it.
+          Music going, drinks going, no real schedule until we hit the 7 PM decision point.
+        </p>
+      </div>
+
+      <div class="arrow"></div>
+
+      <!-- DYE -->
+      <div class="node">
+        <div class="node-header">
+          <span class="node-time">3:15 — 7:00 PM</span>
+          <span class="node-tag">ACTIVITY 03</span>
+        </div>
+        <h3>Dye + Pool + Hang</h3>
+        <p>
+          Long afternoon block. Dye in the backyard, pool when we need to cool off,
+          drinks the whole time. Take it slow — this is the longest stretch of the day
+          and we want everyone in good shape by dinner.
+        </p>
+        <ul>
+          <li>Pace the drinking — long way to go</li>
+          <li>Food and water on rotation</li>
+          <li>Cooler keeps the drinks cold all afternoon</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- SECTION 2: THE BRANCH -->
+    <div class="section-title">
+      <span class="section-title-num">02</span>
+      <h2>The 7 PM Decision</h2>
+      <span class="section-title-line"></span>
+    </div>
+
+    <div class="flow">
+
+      <div class="branch-label">
+        <div class="tag">DECISION POINT — 7:00 PM</div>
+        <h3>How does the night go?</h3>
+        <p>Three options. We figure it out whenever, based on how everyone's feeling.</p>
+      </div>
+
+      <!-- SVG FORK -->
+      <svg class="fork-svg" viewBox="0 0 760 50" preserveAspectRatio="none">
+        <line x1="380" y1="0" x2="380" y2="15" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="127" y1="15" x2="633" y2="15" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="127" y1="15" x2="127" y2="42" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="380" y1="15" x2="380" y2="42" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="633" y1="15" x2="633" y2="42" stroke="#1a1a1a" stroke-width="2" />
+        <polygon points="120,42 134,42 127,50" fill="#1a1a1a" />
+        <polygon points="373,42 387,42 380,50" fill="#1a1a1a" />
+        <polygon points="626,42 640,42 633,50" fill="#1a1a1a" />
+      </svg>
+
+      <div class="paths-row">
+
+        <div class="path-node a">
+          <div class="path-num">OPTION A</div>
+          <div class="path-time">STAY AT JAKE'S</div>
+          <h4>Lock in at Jake's</h4>
+          <p>
+            Nobody leaves. We keep the night going right here. Either order food in or
+            fire up the grill and do BBQ. Change out of swim stuff if needed.
+          </p>
+          <ul>
+            <li>BBQ or delivery — group call</li>
+            <li>Change of clothes from the pool</li>
+            <li>Lowest effort, most chill</li>
+            <li>Bong might make an appearance later for whoever's in</li>
+          </ul>
+        </div>
+
+        <div class="path-node b">
+          <div class="path-num">OPTION B</div>
+          <div class="path-time">HOME → REGROUP LATE</div>
+          <h4>Home, Then Out</h4>
+          <p>
+            Everyone heads home after dye, showers, gets cleaned up. Then we link
+            back up at night for whatever the move is. Doesn't have to be at Jake's.
+          </p>
+          <ul>
+            <li>Reset, shower, eat something small</li>
+            <li>Pick a new spot in the group chat</li>
+            <li>Best if we want to actually go out</li>
+          </ul>
+        </div>
+
+        <div class="path-node c">
+          <div class="path-num">OPTION C</div>
+          <div class="path-time">HOME → LATE DINNER</div>
+          <h4>Late Group Dinner</h4>
+          <p>
+            Same as B but lower energy. Everyone goes home, showers, then we
+            all meet up later for a proper sit-down dinner. Reservation if needed.
+          </p>
+          <ul>
+            <li>Pick a spot by 6 so we can book</li>
+            <li>Real food, real seats</li>
+            <li>Easy way to end the day right</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SECTION 3: NOTES -->
+    <div class="section-title">
+      <span class="section-title-num">03</span>
+      <h2>Things To Remember</h2>
+      <span class="section-title-line"></span>
+    </div>
+
+    <div class="notes">
+      <div class="note-card">
+        <div class="tag">REMINDERS</div>
+        <h4>Don't forget</h4>
+        <ul>
+          <li>Wait for Peter at the court — he's done at 12:20</li>
+          <li>Last basketball game ends by 1:40 sharp</li>
+          <li>Multiple people doing liquor runs — coordinate so we don't double up</li>
+          <li>Someone bring a cooler for Jake's</li>
+          <li>Path A / B / C — figure it out whenever, no rush</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <div class="tag">LOGISTICS</div>
+        <h4>Driving + Money</h4>
+        <ul>
+          <li>Split rides — fewer cars is better</li>
+          <li>Bring cash for lunch if splitting</li>
+          <li>Venmo settle-up at the end of the day</li>
+          <li>Charger packs if you have them</li>
+          <li>Someone stays sober enough to drive home</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SECTION 4: PACK LIST -->
+    <div class="section-title">
+      <span class="section-title-num">04</span>
+      <h2>What To Bring</h2>
+      <span class="section-title-line"></span>
+    </div>
+
+    <div class="pack">
+      <div class="pack-head">
+        <h3>Pack List</h3>
+        <span class="stamp-sm">CHECK BEFORE YOU LEAVE</span>
+      </div>
+      <div class="pack-grid">
+        <div class="pack-col">
+          <h5>BASKETBALL</h5>
+          <div class="pack-item"><span class="checkbox"></span>Basketball shoes</div>
+          <div class="pack-item"><span class="checkbox"></span>Athletic shorts + shirt</div>
+          <div class="pack-item"><span class="checkbox"></span>Water bottle</div>
+          <div class="pack-item"><span class="checkbox"></span>Sweat towel</div>
+          <h5 style="margin-top: 20px;">POOL / DYE</h5>
+          <div class="pack-item"><span class="checkbox"></span>Bathing suit</div>
+          <div class="pack-item"><span class="checkbox"></span>Pool towel</div>
+          <div class="pack-item"><span class="checkbox"></span>Sunscreen</div>
+          <div class="pack-item"><span class="checkbox"></span>Sunglasses</div>
+        </div>
+        <div class="pack-col">
+          <h5>NIGHT OUT</h5>
+          <div class="pack-item"><span class="checkbox"></span>Change of clothes</div>
+          <div class="pack-item"><span class="checkbox"></span>Deodorant</div>
+          <div class="pack-item"><span class="checkbox"></span>Clean socks</div>
+          <div class="pack-item"><span class="checkbox"></span>ID + card + cash</div>
+          <h5 style="margin-top: 20px;">EXTRAS</h5>
+          <div class="pack-item"><span class="checkbox"></span>Phone charger</div>
+          <div class="pack-item"><span class="checkbox"></span>Bluetooth speaker</div>
+          <div class="pack-item"><span class="checkbox"></span>Advil (just in case)</div>
+          <div class="pack-item"><span class="checkbox"></span>Plastic bag for wet stuff</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span>JUNETEENTH GAME PLAN · V1</span>
+      <span>SEE YOU AT THE COURT</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
